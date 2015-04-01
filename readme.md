@@ -43,19 +43,31 @@ Initially, a bearer token will be user with plans to use HMAC in the future. See
 
 The token will be accepted in the URL for development purposes but ultimately in an HTTP header.
 
-### Endpoints
+### Likely endpoints
 
-`POST /session {"username": "username", "password": "password"}` returns `{"id": "xxx-xxx-xxx-xxx"}` 201
+`POST /session {"username": "username", "password": "password"}`
+> `{"id": "xxx-xxx-xxx-xxx"} 201`
 
-`POST /alerts {"stop": "91532"[, "buses": ["336", "W7"]}` returns `{"id": "xxx-xxx-xxx-xxx","stop": "91532"[, "buses": ["336", "W7"]}' 201
+`POST /alerts {"stop": "91532"[, "buses": ["336", "W7"]}`
+> `201 {"id": "xxx-xxx-xxx-xxx","stop": "91532"[, "buses": ["336", "W7"]}`
 
-`GET /alerts` returns `[{"id": "xxx-xxx-xxx-xxx","stop": "91532"[, "buses": ["336", "W7"]}, {"id": "xxx-xxx-xxx-xxx","stop": "91532"[, "buses": ["336", "W7"]}]` 200
+`GET /alerts`
+>
+```
+200
+[
+	{"id": "xxx-xxx-xxx-xxx","stop": "91532"[, "buses": ["336", "W7"]},
+	{"id": "xxx-xxx-xxx-xxx","stop": "91532"[, "buses": ["336", "W7"]}
+]
+```
 
 *Nice to have* a way to request an alert for all buses at a stop except for those specified. Possible payload: `{"stop": "91532"[, "buses": ["*", W7"]}`. All buses expect the W7.
 
-`DELETE /alerts` returns 204
+`DELETE /alerts`
+> 204
 
-`DELETE /alerts/xxx-xxx-xxx-xxx` returns 204
+`DELETE /alerts/xxx-xxx-xxx-xxx`
+> 204
 
 ## Todo
 
