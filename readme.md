@@ -69,23 +69,28 @@ The token will be accepted in the URL for development purposes but ultimately in
 `DELETE /alerts/xxx-xxx-xxx-xxx`
 > 204
 
-## Todo
-
-- Add timings to alert payload.
-
 ## Plan of attack
-
-### API
-
-- Set up Node, Hapi and Mongo
-- Define the routes
-- Define the logic
-- Test, test, test!
 
 ### Web application
 
+- Prototype page*
 - Set up Node and Hapi
 - Create login page
 - Create alerts page
 - Defined routes for the above pages
 - Test, test, test?
+
+### API
+
+- Access TfL's API directly*
+- Set up Node, Hapi and Mongo
+- Define the routes
+- Define the logic
+- Test, test, test!
+
+*Quick and dirty till we know it's working
+
+## Todo
+
+- Add timings to alert payload
+- Clear prototype alert cache
