@@ -4,9 +4,11 @@ $(function () {
 	var busesInput = $("input[name='buses']")
 	var alertMinutesInput = $("input[name='alertMinutes']")
 	var startBtn = $("button[name='start']")
+	var stopBtn = $("button[name='stop']")
 	var expectedBusesTextarea = $("textarea[name='expectedBuses']")
-	var GET_TIMES_INTERVAL = 10000
-	 previousAlerts = {}
+	var GET_TIMES_MS = 10000
+	var getTimesInterval
+	var previousAlerts = {}
 
 	function debug() {
 		var ta = $("textarea[name='debugging']")
@@ -17,20 +19,26 @@ $(function () {
 		ta.val(ta.val() + msg + "\n")
 	}
 
-	startBtn.click(function startBtnClick(e) {
+	startBtn.click(function (e) {
 		e.preventDefault()
 
 		var stopCode = stopCodeInput.val()
 		var buses = busesInput.val()
 		var alertMinutes = alertMinutesInput.val()
 
-		clearInterval(startBtnClick.interval)
+		clearInterval(getTimesInterval)
 
 		start(stopCode, buses, alertMinutes)
 
-		startBtnClick.interval = setInterval(function () {
+		getTimesInterval = setInterval(function () {
 			start(stopCode, buses, alertMinutes)
-		}, GET_TIMES_INTERVAL)
+		}, GET_TIMES_MS)
+	})
+
+	stopBtn.click(function (e) {
+		e.preventDefault()
+		expectedBusesTextarea.val("")
+		clearInterval(getTimesInterval)
 	})
 
 	function start(stop, buses, alertMinutes) {
@@ -39,7 +47,6 @@ $(function () {
 		var xhr = $.ajax(tflApiUrl, {method: "get", dataType: "text"})
 
 		xhr.done(function (response) {
-			console.log(deserialiseResponse(response));
 			var expectedBuses = getExpectedBuses(filterByBus(deserialiseResponse(response), buses))
 			showExpectedBuses(expectedBuses)
 			alertExpectedBuses(expectedBuses, alertMinutes)
