@@ -6,6 +6,7 @@ $(function () {
 	var startBtn = $("button[name='start']")
 	var expectedBusesTextarea = $("textarea[name='expectedBuses']")
 	var GET_TIMES_INTERVAL = 10000
+	 previousAlerts = {}
 
 	function debug() {
 		var ta = $("textarea[name='debugging']")
@@ -16,28 +17,29 @@ $(function () {
 		ta.val(ta.val() + msg + "\n")
 	}
 
-	startBtn.click(function showExpectedBuses(e) {
+	startBtn.click(function startBtnClick(e) {
 		e.preventDefault()
 
 		var stopCode = stopCodeInput.val()
 		var buses = busesInput.val()
 		var alertMinutes = alertMinutesInput.val()
 
-		clearInterval(showExpectedBuses.interval)
+		clearInterval(startBtnClick.interval)
 
 		start(stopCode, buses, alertMinutes)
 
-		showExpectedBuses.interval = setInterval(function () {
+		startBtnClick.interval = setInterval(function () {
 			start(stopCode, buses, alertMinutes)
 		}, GET_TIMES_INTERVAL)
 	})
 
 	function start(stop, buses, alertMinutes) {
 
-		var tflApiUrl = "http://countdown.api.tfl.gov.uk/interfaces/ura/instant_V1?StopAlso=false&StopID=" + stop + "&LineName=" + buses + "&ReturnList=LineName,EstimatedTime,MessageType,MessageText,ExpireTime"
+		var tflApiUrl = "http://countdown.api.tfl.gov.uk/interfaces/ura/instant_V1?StopAlso=false&StopID=" + stop + "&LineName=" + buses + "&ReturnList=LineName,EstimatedTime,MessageType,MessageText,ExpireTime,VehicleID"
 		var xhr = $.ajax(tflApiUrl, {method: "get", dataType: "text"})
 
 		xhr.done(function (response) {
+			console.log(deserialiseResponse(response));
 			var expectedBuses = getExpectedBuses(filterByBus(deserialiseResponse(response), buses))
 			showExpectedBuses(expectedBuses)
 			alertExpectedBuses(expectedBuses, alertMinutes)
@@ -49,29 +51,64 @@ $(function () {
 	}
 
 	function alertExpectedBuses(expectedBuses, alertMinutes) {
+
 		alertMinutes = Array.isArray(alertMinutes) ? alertMinutes : alertMinutes.split(",")
+
 		expectedBuses.forEach(function (expectedBus) {
+
 			var index = alertMinutes.indexOf(expectedBus.expected.toString())
+
 			if (index !== -1) {
-				alertBus(expectedBus.bus, alertMinutes[index])
+
+				var key = expectedBus.vehicleId + "_" + expectedBus.bus + "_" + expectedBus.expected
+				var previousAlert = previousAlerts[key]
+
+				if (!previousAlert) {
+					alertBus(expectedBus.bus, alertMinutes[index])
+					previousAlerts[key] = true
+				}
 			}
+
 		})
+
 	}
 
 	function alertBus(bus, minutes) {
-		console.log("The", bus, "is due in ", minutes, "minutes");
+
+		var message
+
+		if ('speechSynthesis' in window) {
+
+			bus = bus.split("").join(" ")
+			message = "The " + bus + ", is due"
+			if (minutes != 0) {
+				message +=  " in " + minutes + "minutes"
+			}
+
+			var utterance = new SpeechSynthesisUtterance(message)
+			window.speechSynthesis.speak(utterance)
+
+		} else {
+			message = "The " + bus + " is due in " + minutes + "minutes"
+			console.alert(message)
+		}
+
 	}
 
 	function showExpectedBuses(expectedBuses) {
+		var messages = []
 		expectedBuses.forEach(function (expectedBus) {
-			debug("The ", expectedBus.bus, " is expected in ", expectedBus.expected, " minute(s)")
+			messages.push("The " + expectedBus.bus + " is expected in " + expectedBus.expected + " minute(s)")
+
 		})
+		expectedBusesTextarea.val(messages.join("\n"))
 	}
 
 	function getExpectedBuses(data) {
 		var now = new Date()
 		return data.map(function (row) {
 			return {
+				vehicleId: row[2],
 				bus: row[1],
 				expected: getTimeDifference(now, row[3], "m")
 			}
