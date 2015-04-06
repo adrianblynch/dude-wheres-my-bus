@@ -10,6 +10,10 @@ At 4 minutes I need to be leaving the house.
 
 If it gets to 2 minutes I can make it but I have to run!
 
+## How it's all going
+
+I'm keeping a [diary of sorts](history/history.md), with details of the project as I work on it.
+
 ## Minimum Viable Product
 
 Given a stop code and a bus number, alert me when my bus is due in N minutes.
