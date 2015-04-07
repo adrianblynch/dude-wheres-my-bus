@@ -16,18 +16,6 @@ request.get(stopsCsvUrl, function (err, response, body) {
 
 	csvToJson(body, function (err, stops) {
 
-		/*
-			'Stop_Code_LBSL': 'W7',
-		    Bus_Stop_Code: '56604',
-		    Naptan_Atco: '490007928S1',
-		    Stop_Name: 'HAWTHORN CRESCENT',
-		    Location_Easting: '535348',
-		    Location_Northing: '161854',
-		    Heading: '133',
-		    Stop_Area: 'H136',
-		    Virtual_Bus_Stop: '0'
-		*/
-
 		stops.forEach(function (stop, i) {
 
 			var northing = stop.Location_Northing
@@ -41,16 +29,9 @@ request.get(stopsCsvUrl, function (err, response, body) {
 				wgs84: point.toWGS84()
 			}
 
-			// if (i === 500) {
-			// 	console.log(stop)
-			// 	console.log("OSG", stop.coords.osgb36.latitude + "," + stop.coords.osgb36.longitude);
-			// 	console.log("ETRS", stop.coords.etrs89.latitude + "," + stop.coords.etrs89.longitude);
-			// 	console.log("WGS", stop.coords.wgs84.latitude + "," + stop.coords.wgs84.longitude);
-			// }
-
 		})
 
-		fs.writeFile("bus-stops.json", JSON.stringify(stops))
+		fs.writeFile("../webapp/data/bus-stops.json", JSON.stringify(stops))
 
 	})
 
