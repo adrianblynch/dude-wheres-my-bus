@@ -145,6 +145,22 @@ $(function () {
 		})
 	}
 
+	// Map for stops
+
+	var findAStopBtn = $("button[name='findAStop']")
+	var stopMap = $("#stopMap")
+	var london = { lat: 51.489309500000005, lng: -0.08818969999999995 }
+	var mapOptions = {
+		center: london,
+		zoom: 9,
+		streetViewControl: false
+	}
+	var map = new google.maps.Map(stopMap.get(0), mapOptions)
+
+	findAStopBtn.click(function (a) {
+		stopMap.toggle()
+	})
+
 })
 
 /*

@@ -2,8 +2,18 @@
 <html>
 <head>
 	<title>Dude, Where's My Bus?!</title>
+	<script src="https://maps.googleapis.com/maps/api/js"></script>
 	<script src="lib/jquery-2.1.3.min.js"></script>
 	<script src="index.js"></script>
+	<style type="text/css">
+		#stopMap {
+			width: 400px;
+			height: 400px;
+			margin: 0;
+			padding: 0;
+			display: none;
+		}
+	</style>
 </head>
 <body>
 
@@ -14,6 +24,10 @@
 	<!-- 19276,BP712 -->
 	<input name="stopCode" value="BP712">
 </label>
+
+<button name="findAStop">Find a stop</button>
+<div id="stopMap">Map loading...</div>
+
 <label>
 	Buses
 	<!-- 336,208,320,61,261,358 -->
