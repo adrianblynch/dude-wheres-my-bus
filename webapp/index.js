@@ -145,46 +145,73 @@ $(function () {
 		})
 	}
 
-	// Map for stops
+	// Stops
 
 	$.get("data/bus-stops.json")
-
-	.done(function (response) {
-		var markers = makeStopMarkers(response)
-		console.log(markers);
-	})
-
+	.done(initialiseMap)
 	.fail(function() {
 		console.log("Failed to load stops")
 	})
 
-	function makeStopMarkers(stops) {
-		var markers = []
-		stops.forEach(function (stop) {
-			if (stop.coords.etrs89) {
-				// TODO: Actually make a Google Maps Marker
-				// var marker = new google.maps.Marker({latitude: stops.coords.etrs89.latitude, longitude: stops.coords.etrs89.longitude})
-				var marker = {latitude: stop.coords.etrs89.latitude, longitude: stop.coords.etrs89.longitude}
-				markers.push(marker)
+	function initialiseMap(stops) {
+
+		var findAStopBtn = $("button[name='findAStop']")
+		var stopMap = $("#stopMap")
+		var london = {lat: 51.489309500000005, lng: -0.08818969999999995}
+		var startPosition = london
+
+		navigator.geolocation.getCurrentPosition(function (position) {
+
+			startPosition = {lat: position.coords.latitude, lng: position.coords.longitude}
+
+			var mapOptions = {
+				center: startPosition,
+				zoom: 16,
+				streetViewControl: false
 			}
+			var map = new google.maps.Map(stopMap.get(0), mapOptions)
+
+			findAStopBtn.click(function (a) {
+				stopMap.toggle()
+			})
+
+			var markers = makeStopMarkers(stops, map)
+
+			return map
+
 		})
+
+	}
+
+	function makeStopMarkers(stops, map) {
+
+		var markers = []
+
+		stops.forEach(function (stop) {
+
+			if (stop.coords.etrs89) {
+
+				var coord = new google.maps.LatLng(stop.coords.etrs89.latitude, stop.coords.etrs89.longitude)
+				var marker = new google.maps.Marker({
+					position: coord,
+					map: map,
+					title: stop.Stop_Name
+				})
+				var infoWindow = new google.maps.InfoWindow({content: stop.Stop_Name});
+
+				google.maps.event.addListener(marker, "click", function() {
+					infoWindow.open(map, marker)
+				})
+
+				markers.push(marker)
+
+			}
+
+		})
+
 		return markers
+
 	}
-
-
-	/*var findAStopBtn = $("button[name='findAStop']")
-	var stopMap = $("#stopMap")
-	var london = { lat: 51.489309500000005, lng: -0.08818969999999995 }
-	var mapOptions = {
-		center: london,
-		zoom: 9,
-		streetViewControl: false
-	}
-	var map = new google.maps.Map(stopMap.get(0), mapOptions)
-
-	findAStopBtn.click(function (a) {
-		stopMap.toggle()
-	})*/
 
 })
 
