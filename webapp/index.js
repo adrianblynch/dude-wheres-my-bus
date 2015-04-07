@@ -199,8 +199,16 @@ $(function () {
 				})
 				var infoWindow = new google.maps.InfoWindow({content: stop.Stop_Name});
 
-				google.maps.event.addListener(marker, "click", function() {
+				google.maps.event.addListener(marker, "mouseover", function() {
 					infoWindow.open(map, marker)
+				})
+
+				google.maps.event.addListener(marker, "mouseout", function() {
+					infoWindow.close()
+				})
+
+				google.maps.event.addListener(marker, "click", function() {
+					stopCodeInput.val(stop.Stop_Code_LBSL)
 				})
 
 				markers.push(marker)
