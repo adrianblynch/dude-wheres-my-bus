@@ -41,7 +41,9 @@ function csvToJson(csvData, callback) {
 
 	var json = []
 	var csv = csvData.toString().split(/\r\n|\n|\r/)
-	var tokens = csv[0].split(",")
+	var tokens = csv[0].split(",").map(function(token) {
+		return token.trim()
+	})
 
 	for (var i = 1; i < csv.length; i++) {
 
