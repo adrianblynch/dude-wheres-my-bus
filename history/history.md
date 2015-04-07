@@ -40,3 +40,17 @@ I'll need a map at some point, why not get one up and running now? It can be add
 I think holding off from any API work is a good thing. The front-end requirements will drive the design of the API so I'm happy to wait.
 
 I'm itching to start on one of the mobile apps but I can't fully visualise how they would work so holding off on those feels right too.
+
+## Maps! - 6th & 7th April '15
+
+I decided on implementing the stop map.
+
+I haven't touch Google's map API in a very long time but it's much the same as it was.
+
+More of a challenge was getting the coords for stops from the CSV file supplied by TfL. It comes with northing and easting coordinates. These don't seem to work for Google Maps so I need to convert these to lat and long coords.
+
+A quick read around and a search on npm threw up [ospoint](https://www.npmjs.com/package/ospoint). Testing the conversion and reading up on geo reference systems, I went with ETRS89.
+
+As a side note, to test whether the conversion was getting the right location for stops, I chose a handful of random stops, converted the north/eastings to lat and long and searched on Google Maps.
+
+It's quite early in the morning now and I'm tempted to call it a night (morning?) but I want to at least plot some stops on the map before heading to bed.
