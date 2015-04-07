@@ -51,7 +51,7 @@ $(function () {
 			showExpectedBuses(expectedBuses)
 			alertExpectedBuses(expectedBuses, alertMinutes)
 		})
-		xhr.fail(function (a, b, c) {
+		xhr.fail(function () {
 			console.log("Failed calling TfL's API")
 		})
 
@@ -147,7 +147,32 @@ $(function () {
 
 	// Map for stops
 
-	var findAStopBtn = $("button[name='findAStop']")
+	$.get("data/bus-stops.json")
+
+	.done(function (response) {
+		var markers = makeStopMarkers(response)
+		console.log(markers);
+	})
+
+	.fail(function() {
+		console.log("Failed to load stops")
+	})
+
+	function makeStopMarkers(stops) {
+		var markers = []
+		stops.forEach(function (stop) {
+			if (stop.coords.etrs89) {
+				// TODO: Actually make a Google Maps Marker
+				// var marker = new google.maps.Marker({latitude: stops.coords.etrs89.latitude, longitude: stops.coords.etrs89.longitude})
+				var marker = {latitude: stop.coords.etrs89.latitude, longitude: stop.coords.etrs89.longitude}
+				markers.push(marker)
+			}
+		})
+		return markers
+	}
+
+
+	/*var findAStopBtn = $("button[name='findAStop']")
 	var stopMap = $("#stopMap")
 	var london = { lat: 51.489309500000005, lng: -0.08818969999999995 }
 	var mapOptions = {
@@ -159,7 +184,7 @@ $(function () {
 
 	findAStopBtn.click(function (a) {
 		stopMap.toggle()
-	})
+	})*/
 
 })
 
