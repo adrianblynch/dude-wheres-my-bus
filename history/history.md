@@ -64,3 +64,5 @@ I'm placing all markers on the map in one go. Not terribly efficient but makes c
 The original zoom level of 9 resulted in a sea of markers obscuring London. To make things a little easier I've now set it to 16. A future enhancement might be to show collective markers but that's not for MVP.
 
 Clicking on a marker will set the Stop code field. Still to to, setting the buses available at a given stop.
+
+[<img src="images/dwmb-map-n-markers.png">](images/dwmb-map-n-markers.png)
