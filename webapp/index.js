@@ -136,80 +136,115 @@ $(function () {
 		})
 	}
 
-	// Stops
+	// Stops map
 
-	$.get("data/bus-stops.json")
-	.done(initialiseMap)
-	.fail(function() {
-		console.log("Failed to load stops")
+	var map, stops, markers, currentPosition
+
+	getBusStops()
+	.then(function(response) {
+		stops = response
+		return initialiseMap(stops)
+	})
+	.then(function(response) {
+		map = response
+		return makeStopMarkers(stops, map)
+	})
+	.then(function(response) {
+		markers = response
+		return getCurrentPosition()
+	})
+	.then(function(response) {
+		currentPosition = response
+		return centreMapOn(map, {latitude: currentPosition.coords.latitude, longitude: currentPosition.coords.longitude})
+	})
+	.then(function(response) {
+		console.log("Done centering map", response);
+	})
+	.catch(function(e) {
+		console.log("An error occurred doing somethign!", e)
 	})
 
+	function getBusStops() {
+		return new Promise(function(resolve, reject) {
+			$.get("data/bus-stops.json").done(resolve).fail(reject)
+		})
+	}
+
 	function initialiseMap(stops) {
-
-		var findAStopBtn = $("button[name='findAStop']")
-		var stopMap = $("#stopMap")
-		var london = {lat: 51.489309500000005, lng: -0.08818969999999995}
-		var startPosition = london
-
-		navigator.geolocation.getCurrentPosition(function (position) {
-
-			startPosition = {lat: position.coords.latitude, lng: position.coords.longitude}
-
-			var mapOptions = {
-				center: startPosition,
-				zoom: 16,
-				streetViewControl: false
+		return new Promise(function(resolve, reject) {
+			try {
+				var stopMap = $("#stopMap")
+				var london = {lat: 51.489309500000005, lng: -0.08818969999999995}
+				var mapOptions = {
+					center: london,
+					zoom: 16,
+					streetViewControl: false
+				}
+				resolve(new google.maps.Map(stopMap.get(0), mapOptions))
+			} catch (e) {
+				reject(e)
 			}
-			var map = new google.maps.Map(stopMap.get(0), mapOptions)
+		})
+	}
 
-			findAStopBtn.click(function (a) {
-				stopMap.toggle()
+	function makeStopMarkers(stops, map) {
+
+		return new Promise(function(resolve, reject) {
+
+			var markers = []
+
+			stops.forEach(function (stop) {
+
+				if (stop.coords.etrs89) {
+
+					var coord = new google.maps.LatLng(stop.coords.etrs89.latitude, stop.coords.etrs89.longitude)
+					var marker = new google.maps.Marker({
+						position: coord,
+						map: map,
+						title: stop.Stop_Name
+					})
+					var infoWindow = new google.maps.InfoWindow({content: stop.Stop_Name});
+
+					google.maps.event.addListener(marker, "mouseover", function() {
+						infoWindow.open(map, marker)
+					})
+
+					google.maps.event.addListener(marker, "mouseout", function() {
+						infoWindow.close()
+					})
+
+					google.maps.event.addListener(marker, "click", function() {
+						stopCodeInput.val(stop.Stop_Code_LBSL)
+					})
+
+					markers.push(marker)
+
+				}
+
 			})
 
-			var markers = makeStopMarkers(stops, map)
-
-			return map
+			return resolve(markers)
 
 		})
 
 	}
 
-	function makeStopMarkers(stops, map) {
-
-		var markers = []
-
-		stops.forEach(function (stop) {
-
-			if (stop.coords.etrs89) {
-
-				var coord = new google.maps.LatLng(stop.coords.etrs89.latitude, stop.coords.etrs89.longitude)
-				var marker = new google.maps.Marker({
-					position: coord,
-					map: map,
-					title: stop.Stop_Name
-				})
-				var infoWindow = new google.maps.InfoWindow({content: stop.Stop_Name});
-
-				google.maps.event.addListener(marker, "mouseover", function() {
-					infoWindow.open(map, marker)
-				})
-
-				google.maps.event.addListener(marker, "mouseout", function() {
-					infoWindow.close()
-				})
-
-				google.maps.event.addListener(marker, "click", function() {
-					stopCodeInput.val(stop.Stop_Code_LBSL)
-				})
-
-				markers.push(marker)
-
-			}
-
+	function centreMapOn(map, coords) {
+		return new Promise(function(resolve, reject) {
+			resolve(map.panTo(new google.maps.LatLng(coords.latitude, coords.longitude)))
 		})
+	}
 
-		return markers
-
+	function getCurrentPosition() {
+		return new Promise(function(resolve, reject) {
+			try {
+				navigator.geolocation.getCurrentPosition(function (position) {
+					resolve(position)
+				})
+			} catch (e) {
+				reject(e)
+			}
+		})
 	}
 
 })
