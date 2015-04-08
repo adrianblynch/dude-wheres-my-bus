@@ -5,10 +5,14 @@ $(function () {
 	var alertMinutesInput = $("input[name='alertMinutes']")
 	var startBtn = $("button[name='start']")
 	var stopBtn = $("button[name='stop']")
+	var centreOnLocationBtn = $("#centreOnLocation")
 	var expectedBusesTextarea = $("textarea[name='expectedBuses']")
-	var GET_TIMES_MS = 10000
 	var getTimesInterval
 	var previousAlerts = {}
+	var LONDON = {lat: 51.489309500000005, lng: -0.08818969999999995}
+	var GET_TIMES_MS = 10000
+	var START_ZOOM = 16
+	var stopMap = $("#stopMap")
 
 	startBtn.click(function (e) {
 		e.preventDefault()
@@ -30,6 +34,21 @@ $(function () {
 		e.preventDefault()
 		expectedBusesTextarea.val("")
 		clearInterval(getTimesInterval)
+	})
+
+	centreOnLocationBtn.click(function(e) {
+		var originalValue = e.currentTarget.innerText
+		e.currentTarget.innerText = "Please wait..."
+		e.currentTarget.disabled = true
+		e.preventDefault()
+		getCurrentPosition()
+		.then(function(response) {
+			return centreMapOn(map, {latitude: response.coords.latitude, longitude: response.coords.longitude})
+		})
+		.then(function() {
+			e.currentTarget.innerText = originalValue
+			e.currentTarget.disabled = false
+		})
 	})
 
 	function start(stop, buses, alertMinutes) {
@@ -149,17 +168,13 @@ $(function () {
 		map = response
 		return makeStopMarkers(stops, map)
 	})
-	.then(function(response) {
-		markers = response
-		return getCurrentPosition()
-	})
-	.then(function(response) {
-		currentPosition = response
-		return centreMapOn(map, {latitude: currentPosition.coords.latitude, longitude: currentPosition.coords.longitude})
-	})
-	.then(function(response) {
-		console.log("Done centering map", response);
-	})
+	// .then(function(response) {
+	// 	markers = response
+	// 	return getCurrentPosition()
+	// })
+	// .then(function(response) {
+	// 	return centreMapOn(map, {latitude: response.coords.latitude, longitude: response.coords.longitude})
+	// })
 	.catch(function(e) {
 		console.log("An error occurred doing somethign!", e)
 	})
@@ -173,11 +188,9 @@ $(function () {
 	function initialiseMap(stops) {
 		return new Promise(function(resolve, reject) {
 			try {
-				var stopMap = $("#stopMap")
-				var london = {lat: 51.489309500000005, lng: -0.08818969999999995}
 				var mapOptions = {
-					center: london,
-					zoom: 16,
+					center: LONDON,
+					zoom: START_ZOOM,
 					streetViewControl: false
 				}
 				resolve(new google.maps.Map(stopMap.get(0), mapOptions))
