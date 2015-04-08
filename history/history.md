@@ -71,7 +71,7 @@ Clicking on a marker will set the Stop code field. Still to to, setting the buse
 
 The code was turning into callback/async/sync soup!
 
-I decided to start creating methods that return promises. The reason for this is that promises allow, in my opinion, better composition of sycn and async code.
+I decided to start creating methods that return promises. The reason for this is that promises allow, in my opinion, better composition of sync and async code.
 
 I've decided that I'll take the hit on browsers not supporting promises natively for now. I'll eventually polyfill it.
 
