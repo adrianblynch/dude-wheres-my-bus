@@ -66,3 +66,13 @@ The original zoom level of 9 resulted in a sea of markers obscuring London. To m
 Clicking on a marker will set the Stop code field. Still to to, setting the buses available at a given stop.
 
 [<img src="images/dwmb-map-n-markers.png">](images/dwmb-map-n-markers.png)
+
+## I Promise - 8th April '15
+
+The code was turning into callback/async/sync soup!
+
+I decided to start creating methods that return promises. The reason for this is that promises allow, in my opinion, better composition of sycn and async code.
+
+I've decided that I'll take the hit on browsers not supporting promises natively for now. I'll eventually polyfill it.
+
+Thinking about it, maybe I'll start using more polyfillable ES6 loveliness! Sets and  Maps might be nice...
