@@ -10,15 +10,6 @@ $(function () {
 	var getTimesInterval
 	var previousAlerts = {}
 
-	function debug() {
-		var ta = $("textarea[name='debugging']")
-		var msg = ""
-		for (var i = 0; i < arguments.length; i++) {
-			msg += arguments[i]
-		}
-		ta.val(ta.val() + msg + "\n")
-	}
-
 	startBtn.click(function (e) {
 		e.preventDefault()
 
@@ -222,14 +213,3 @@ $(function () {
 	}
 
 })
-
-/*
-
-	Stops
-	Stop_Code_LBSL	Bus_Stop_Code	Naptan_Atco	Stop_Name		Location_Easting	Location_Northing	Heading	Stop_Area	Virtual_Bus_Stop
-	BP712			76390			490007407S	GREAT ELMS ROAD	541163				168302				232		FT12		0
-
-	Fields
-	StopPointName,StopID,StopCode1,StopCode2,StopPointState,StopPointType,StopPointIndicator,Towards,Bearing,Latitude,Longitude,VisitNumber,TripID,VehicleID,RegistrationNumber,LineID,LineName,DirectionID,DestinationText,DestinationName,EstimatedTime,MessageUUID,MessageText,MessageType,MessagePriority,StartTime,ExpireTime,BaseVersion
-
-*/
