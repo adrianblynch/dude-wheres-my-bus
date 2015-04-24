@@ -76,3 +76,7 @@ I decided to start creating methods that return promises. The reason for this is
 I've decided that I'll take the hit on browsers not supporting promises natively for now. I'll eventually polyfill it.
 
 Thinking about it, maybe I'll start using more polyfillable ES6 loveliness! Sets and  Maps might be nice...
+
+## Repo split - 24th April '15
+
+To help with deployment I decided to partition off the [webapp folder into its own repo](https://github.com/adrianblynch/dude-wheres-my-bus-webapp) following [instructions found here](http://wiki.colar.net/migrate_git_project_folder_to_own_repository).
