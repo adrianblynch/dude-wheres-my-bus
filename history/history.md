@@ -80,3 +80,5 @@ Thinking about it, maybe I'll start using more polyfillable ES6 loveliness! Sets
 ## Repo split - 24th April '15
 
 To help with deployment I decided to partition off the [webapp folder into its own repo](https://github.com/adrianblynch/dude-wheres-my-bus-webapp) following [instructions found here](http://wiki.colar.net/migrate_git_project_folder_to_own_repository).
+
+Afterwhich I deployed to [divshot](https://divshot.com/) here: http://development.dude-wheres-my-bus.divshot.io/.
